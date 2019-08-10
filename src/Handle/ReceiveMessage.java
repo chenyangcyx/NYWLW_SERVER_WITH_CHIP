@@ -50,12 +50,20 @@ public class ReceiveMessage extends Thread
 				//消息为无用消息
 				else
 				{
+					//发出通知
+					Utils.utils.SendSystemMessage("消息为无用消息，立即关闭接收与发送线程！剩余"+(Utils.utils.all_receive_thread.size()-1)+"个线程！");
+					
 					//关闭发送线程的Socket
 					Utils.utils.all_send_thread.get(Utils.utils.all_receive_thread.indexOf(this)).so.close();
+					//从List中移除发送线程
+					Utils.utils.all_send_thread.remove(Utils.utils.all_receive_thread.indexOf(this));
 					//关闭发送线程
 					Utils.utils.all_send_thread.get(Utils.utils.all_receive_thread.indexOf(this)).stop();
+					
 					//关闭本线程的Socket
 					this.so.close();
+					//从List中移除接收线程
+					Utils.utils.all_receive_thread.remove(this);
 					//关闭本线程
 					this.stop();
 				}
