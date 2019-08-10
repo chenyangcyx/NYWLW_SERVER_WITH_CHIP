@@ -6,6 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
+import Handle.ReceiveMessage;
+import Handle.SendMessage;
 
 public class Utils
 {
@@ -13,6 +17,11 @@ public class Utils
 	public static Utils utils=new Utils();
 	
 	Connection conn = null;
+	
+	/*存储所有线程的List*/
+	public ArrayList<ReceiveMessage> all_receive_thread=new ArrayList<>();
+	public ArrayList<SendMessage> all_send_thread=new ArrayList<>();
+	/*存储所有线程的List*/
 	
 	//默认构造函数
 	Utils()
@@ -106,7 +115,7 @@ public class Utils
 	//解析从单片机发来的字符串信息
 	public boolean AnalyzeMessage(String str,DataStruct ds)
 	{
-		if(!str.contains("temperature:"))
+		if((!str.contains("temperature:"))||(!str.contains("humidity:"))||(!str.contains("illumination:")))
 			return false;
 		int wendu=0,shidu=0,guangzhao=0;
 		wendu=Integer.parseInt(str.substring(str.indexOf("temperature:")+"temperature:".length(), str.indexOf(",humidity:")));

@@ -30,6 +30,7 @@ public class ReceiveMessage extends Thread
 		this.thread_creating_time=Utils.utils.GetTimeByLong();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void run()
 	{
 		String str=null;
@@ -44,9 +45,19 @@ public class ReceiveMessage extends Thread
 				Utils.utils.WriteOriginMessage(str);
 				//解析消息，存入数据库
 				if(Utils.utils.AnalyzeMessage(str, ds))
-				{
 					//将设置好的消息写入数据库
 					Utils.utils.WriteDataMessage(ds);
+				//消息为无用消息
+				else
+				{
+					//关闭发送线程的Socket
+					Utils.utils.all_send_thread.get(Utils.utils.all_receive_thread.indexOf(this)).so.close();
+					//关闭发送线程
+					Utils.utils.all_send_thread.get(Utils.utils.all_receive_thread.indexOf(this)).stop();
+					//关闭本线程的Socket
+					this.so.close();
+					//关闭本线程
+					this.stop();
 				}
 				//刷新当前线程的记录时间
 				RefreshTime();
