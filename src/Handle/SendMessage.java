@@ -31,8 +31,12 @@ public class SendMessage extends Thread
 				str=Utils.utils.SearchNeedInstruction();
 				if(str!=null)
 				{
-					wri.println(str);
-					wri.flush();
+					//消息多次发送以防丢失
+					for(int i=0;i<ConnectPara.global_cp.message_resend_time;i++)
+					{
+						wri.println(str);
+						wri.flush();
+					}
 					Utils.utils.SendSystemMessage("发送消息："+str);
 				}
 			}
