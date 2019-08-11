@@ -62,9 +62,10 @@ public class Utils
 	{
 		PreparedStatement pre=null;
 		try{
-			pre=conn.prepareStatement("insert into "+MySqlPara.global_mp.OriginalMessage_TableName+" values(?,?)");
+			pre=conn.prepareStatement("insert into "+MySqlPara.global_mp.OriginalMessage_TableName+" values(?,?,?)");
 			pre.setString(1, GetCurrentTime());
-			pre.setString(2, mess);
+			pre.setString(2, String.valueOf(System.currentTimeMillis()));
+			pre.setString(3, mess);
 			pre.executeUpdate();
 			SendSystemMessage("原始消息："+mess);
 		} catch (Exception e) {
@@ -77,11 +78,12 @@ public class Utils
 	{
 		PreparedStatement pre=null;
 		try{
-			pre=conn.prepareStatement("insert into "+MySqlPara.global_mp.DataMessage_TableName+" values(?,?,?,?)");
+			pre=conn.prepareStatement("insert into "+MySqlPara.global_mp.DataMessage_TableName+" values(?,?,?,?,?)");
 			pre.setString(1, GetCurrentTime());
-			pre.setString(2, String.valueOf(ds.getWendu()));
-			pre.setString(3, String.valueOf(ds.getShidu()));
-			pre.setString(4, String.valueOf(ds.getGuangzhao()));
+			pre.setString(2, String.valueOf(System.currentTimeMillis()));
+			pre.setString(3, String.valueOf(ds.getWendu()));
+			pre.setString(4, String.valueOf(ds.getShidu()));
+			pre.setString(5, String.valueOf(ds.getGuangzhao()));
 			pre.executeUpdate();
 			SendSystemMessage("写入数据库"+MySqlPara.global_mp.DataMessage_TableName+"：温度："+ds.getWendu()+"，湿度："+ds.getShidu()+"，光照强度："+ds.getGuangzhao());
 		} catch (Exception e) {
