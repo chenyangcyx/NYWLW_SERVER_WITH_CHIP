@@ -12,12 +12,13 @@ public class Distribute extends Thread
 	public void Handle(Socket so)
 	{
 		//开启接收消息线程
-		Utils.utils.SendSystemMessage("开启消息接收线程");
+		Utils.utils.RecordSystemMessage("开启消息接收线程！");
 		ReceiveMessage t1=new ReceiveMessage(so);
 		Utils.utils.all_receive_thread.add(t1);
 		t1.start();
 		//开启发送消息线程
-		Utils.utils.SendSystemMessage("开启消息发送线程");
+		Utils.utils.RecordSystemMessage("开启消息发送线程！");
+		Utils.utils.SendSystemMessage();
 		SendMessage t2=new SendMessage(so);
 		Utils.utils.all_send_thread.add(t2);
 		t2.start();
@@ -40,10 +41,10 @@ public class Distribute extends Thread
 				if(Utils.utils.GetTimeByLong()-t.GetThreadTime()>=ConnectPara.global_cp.thread_timeout_time)
 				{
 					SendMessage t2=Utils.utils.all_send_thread.get(i);
-					Utils.utils.SendSystemMessage("线程"+t.getName()+"超时，撤销该线程！剩余"+(Utils.utils.all_receive_thread.size()-1)+"个线程！");
-					Utils.utils.SendSystemMessage("线程"+t2.getName()+"超时，撤销该线程！剩余"+(Utils.utils.all_send_thread.size()-1)+"个线程！");
-					Utils.utils.all_receive_thread.remove(i);
-					Utils.utils.all_send_thread.remove(i);
+					Utils.utils.RecordSystemMessage("线程"+t.getName()+"超时，撤销该线程！剩余"+(Utils.utils.all_receive_thread.size()-1)+"个线程！");
+					Utils.utils.SendSystemMessage();
+					Utils.utils.RecordSystemMessage("线程"+t2.getName()+"超时，撤销该线程！剩余"+(Utils.utils.all_send_thread.size()-1)+"个线程！");
+					Utils.utils.SendSystemMessage();
 					try {
 						t.so.close();
 						t2.so.close();
@@ -52,6 +53,11 @@ public class Distribute extends Thread
 					} catch (Exception e) {
 						Utils.utils.HandleException(e);
 					}
+					t.RecycleThisThread();
+					t2.RecycleThisThread();
+					Utils.utils.all_receive_thread.remove(i);
+					Utils.utils.all_send_thread.remove(i);
+					System.gc();
 				}
 			}
 		}

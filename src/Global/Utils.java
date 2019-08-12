@@ -18,6 +18,9 @@ public class Utils
 	
 	Connection conn = null;
 	
+	StringBuilder send_mess=new StringBuilder();
+	String sep=System.getProperty("line.separator");
+	
 	/*存储所有线程的List*/
 	public ArrayList<ReceiveMessage> all_receive_thread=new ArrayList<>();
 	public ArrayList<SendMessage> all_send_thread=new ArrayList<>();
@@ -29,14 +32,16 @@ public class Utils
 		try
 	    {
 			// 打开链接
-			SendSystemMessage("开始连接数据库");
+			RecordSystemMessage("开始连接数据库");
+			SendSystemMessage();
 	    	// 注册 JDBC 驱动
 		    Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(MySqlPara.global_mp.SQLAddress,MySqlPara.global_mp.SQLAccount,MySqlPara.global_mp.SQLPassword);
 			if(!conn.isClosed())
-				SendSystemMessage("连接数据库成功！");
+				RecordSystemMessage("连接数据库成功！");
 			else
-				SendSystemMessage("连接数据库失败！");
+				RecordSystemMessage("连接数据库失败！");
+			SendSystemMessage();
 		}
 	    catch (Exception e)
 	    {
@@ -67,9 +72,9 @@ public class Utils
 			pre.setString(2, String.valueOf(System.currentTimeMillis()));
 			pre.setString(3, mess);
 			pre.executeUpdate();
-			SendSystemMessage("原始消息："+mess);
+			RecordSystemMessage("原始消息："+mess+sep);
 		} catch (Exception e) {
-			Utils.utils.HandleException(e);
+			HandleException(e);
 		}
 	}
 	
@@ -85,9 +90,10 @@ public class Utils
 			pre.setString(4, String.valueOf(ds.getShidu()));
 			pre.setString(5, String.valueOf(ds.getGuangzhao()));
 			pre.executeUpdate();
-			SendSystemMessage("写入数据库"+MySqlPara.global_mp.DataMessage_TableName+"：温度："+ds.getWendu()+"，湿度："+ds.getShidu()+"，光照强度："+ds.getGuangzhao());
+			RecordSystemMessage("写入数据库"+MySqlPara.global_mp.DataMessage_TableName+"：温度："+ds.getWendu()+"，湿度："+ds.getShidu()+"，光照强度："+ds.getGuangzhao());
+			SendSystemMessage();
 		} catch (Exception e) {
-			Utils.utils.HandleException(e);
+			HandleException(e);
 		}
 	}
 	
@@ -109,7 +115,7 @@ public class Utils
 				stmt.execute("update "+MySqlPara.global_mp.ControlMessage_TableName+" set ifsend=1");
 			}
 		} catch (Exception e) {
-			Utils.utils.HandleException(e);
+			HandleException(e);
 		}
 		return return_str;
 	}
@@ -126,21 +132,31 @@ public class Utils
 		ds.setWendu(wendu);
 		ds.setShidu(shidu);
 		ds.setGuangzhao(guangzhao);
-		SendSystemMessage("消息解析完成！");
+		RecordSystemMessage("消息解析完成！");
+		SendSystemMessage();
 		return true;
 	}
 	
-	//发送系统消息
-	public void SendSystemMessage(String str)
+	//记录系统消息
+	public void RecordSystemMessage(String str)
 	{
-		System.out.println(GetCurrentTime());
-		System.out.println(str);
+		if(send_mess.length()==0)
+			send_mess.append(GetCurrentTime()).append(sep);
+		send_mess.append(str);
+	}
+	
+	//发送系统消息
+	public void SendSystemMessage()
+	{
+		System.out.println(send_mess);
 		System.out.println();
+		send_mess.delete(0, send_mess.length());
 	}
 	
 	//统一异常处理
 	public void HandleException(Exception e)
 	{
-		SendSystemMessage("捕获异常："+e.toString().substring(0, e.toString().indexOf(":")));
+		RecordSystemMessage("捕获异常："+e.toString().substring(0, e.toString().indexOf(":")));
+		SendSystemMessage();
 	}
 }

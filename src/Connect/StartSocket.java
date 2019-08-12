@@ -31,7 +31,7 @@ public class StartSocket
 			{
 				//开始接收Socket
 				Socket so=ser.accept();
-				Utils.utils.SendSystemMessage("接收到Socket连接！");
+				Utils.utils.RecordSystemMessage("接收到Socket连接，");
 				dis.Handle(so);
 			}
 			catch(Exception e)

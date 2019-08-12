@@ -37,7 +37,8 @@ public class SendMessage extends Thread
 						wri.println(str);
 						wri.flush();
 					}
-					Utils.utils.SendSystemMessage("发送消息："+str);
+					Utils.utils.RecordSystemMessage("发送消息："+str);
+					Utils.utils.SendSystemMessage();
 				}
 			}
 		} catch (Exception e) {
@@ -45,5 +46,14 @@ public class SendMessage extends Thread
 		}
 	}
 	
-	
+	//回收该线程所占用资源
+	@SuppressWarnings("deprecation")
+	public void RecycleThisThread()
+	{
+		try {
+			this.finalize();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
 }

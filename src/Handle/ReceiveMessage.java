@@ -54,4 +54,15 @@ public class ReceiveMessage extends Thread
 			Utils.utils.HandleException(e);
 		}
 	}
+	
+	//回收该线程所占用资源
+	@SuppressWarnings("deprecation")
+	public void RecycleThisThread()
+	{
+		try {
+			this.finalize();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
 }
