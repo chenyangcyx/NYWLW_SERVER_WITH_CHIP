@@ -53,10 +53,10 @@ public class Distribute extends Thread
 					} catch (Exception e) {
 						Utils.utils.HandleException(e);
 					}
-					t.RecycleThisThread();
-					t2.RecycleThisThread();
 					Utils.utils.all_receive_thread.remove(i);
 					Utils.utils.all_send_thread.remove(i);
+					t=null;
+					t2=null;
 					System.gc();
 				}
 			}

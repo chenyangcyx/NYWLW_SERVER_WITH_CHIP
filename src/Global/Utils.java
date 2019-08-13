@@ -17,6 +17,7 @@ public class Utils
 	public static Utils utils=new Utils();
 	
 	Connection conn = null;
+	PreparedStatement pre=null;
 	
 	StringBuilder send_mess=new StringBuilder();
 	String sep=System.getProperty("line.separator");
@@ -65,13 +66,14 @@ public class Utils
 	//写入originmessage
 	public void WriteOriginMessage(String mess)
 	{
-		PreparedStatement pre=null;
+		PreparedStatement pre;
 		try{
 			pre=conn.prepareStatement("insert into "+MySqlPara.global_mp.OriginalMessage_TableName+" values(?,?,?)");
 			pre.setString(1, GetCurrentTime());
 			pre.setString(2, String.valueOf(System.currentTimeMillis()));
 			pre.setString(3, mess);
 			pre.executeUpdate();
+			pre.close();
 			RecordSystemMessage("原始消息："+mess+sep);
 		} catch (Exception e) {
 			HandleException(e);
@@ -81,7 +83,7 @@ public class Utils
 	//写入datamessage
 	public void WriteDataMessage(DataStruct ds)
 	{
-		PreparedStatement pre=null;
+		PreparedStatement pre;
 		try{
 			pre=conn.prepareStatement("insert into "+MySqlPara.global_mp.DataMessage_TableName+" values(?,?,?,?,?)");
 			pre.setString(1, GetCurrentTime());
@@ -90,6 +92,7 @@ public class Utils
 			pre.setString(4, String.valueOf(ds.getShidu()));
 			pre.setString(5, String.valueOf(ds.getGuangzhao()));
 			pre.executeUpdate();
+			pre.close();
 			RecordSystemMessage("写入数据库"+MySqlPara.global_mp.DataMessage_TableName+"：温度："+ds.getWendu()+"，湿度："+ds.getShidu()+"，光照强度："+ds.getGuangzhao());
 			SendSystemMessage();
 		} catch (Exception e) {
