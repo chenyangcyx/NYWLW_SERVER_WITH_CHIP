@@ -17,7 +17,6 @@ public class Utils
 	public static Utils utils=new Utils();
 	
 	Connection conn = null;
-	PreparedStatement pre=null;
 	
 	StringBuilder send_mess=new StringBuilder();
 	String sep=System.getProperty("line.separator");
@@ -107,16 +106,18 @@ public class Utils
 		try
 		{
 			Statement stmt = conn.createStatement();
-			ResultSet res1=stmt.executeQuery("select * from "+MySqlPara.global_mp.ControlMessage_TableName+" where ifsend=0 order by time desc");
-			res1.last();
-			if(res1.getRow()>0)
+			ResultSet res=stmt.executeQuery("select * from "+MySqlPara.global_mp.ControlMessage_TableName+" where ifsend=0 order by time desc");
+			res.last();
+			if(res.getRow()>0)
 			{
 				//获取最新的控制信息
-				res1.first();
-				return_str=res1.getString("message");
+				res.first();
+				return_str=res.getString("message");
 				//刷新该表
 				stmt.execute("update "+MySqlPara.global_mp.ControlMessage_TableName+" set ifsend=1");
 			}
+			stmt.close();
+			res.close();
 		} catch (Exception e) {
 			HandleException(e);
 		}
