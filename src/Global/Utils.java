@@ -84,12 +84,13 @@ public class Utils
 	{
 		PreparedStatement pre;
 		try{
-			pre=conn.prepareStatement("insert into "+MySqlPara.global_mp.DataMessage_TableName+" values(?,?,?,?,?)");
+			pre=conn.prepareStatement("insert into "+MySqlPara.global_mp.DataMessage_TableName+" values(?,?,?,?,?,?)");
 			pre.setString(1, GetCurrentTime());
 			pre.setString(2, String.valueOf(System.currentTimeMillis()));
 			pre.setString(3, String.valueOf(ds.getWendu()));
 			pre.setString(4, String.valueOf(ds.getShidu()));
 			pre.setString(5, String.valueOf(ds.getGuangzhao()));
+			pre.setString(6, "0");
 			pre.executeUpdate();
 			pre.close();
 			RecordSystemMessage("写入数据库"+MySqlPara.global_mp.DataMessage_TableName+"：温度："+ds.getWendu()+"，湿度："+ds.getShidu()+"，光照强度："+ds.getGuangzhao());
